@@ -10,6 +10,7 @@ import { DialogData } from '../../../models/common/dialog-data.model';
 import { OfferEntryComponent } from '../offer-entry/offer-entry.component';
 import { DatatableButtonOutput } from '../../../models/common/datatable-button-output';
 import { NavigationDataService } from '../../../services/common/navigation-data.service';
+import { Offer } from '../../../models/master-settings/inventory-defination/offer.model';
 @Component({
   selector: 'app-offer-list',
   templateUrl: './offer-list.component.html',
@@ -24,9 +25,10 @@ export class OfferListComponent implements OnInit {
   ColumnList:any[]=[];
   DataList:any[]=[];
   offerSetupList:OfferSetup[]=[];
-  offerSetup:OfferSetup={Id:null,OfferId:null,OfferName:null,DiscountRate:0,IsSingle:false,OfferType:"single",
-    Product_Id:null,FreeProduct_Id:null,ProductName:null,FreeProductList:null,ViewFreeProduct:null,
-    ProductList:[],IsOneToMany:false,IsManyToOne:false
+  offer:Offer={Id:null,OfferId:null,OfferName:null,DiscountRate:0,IsSingle:false,OfferType:"single",
+    IsOneToMany:false,IsManyToOne:false,ProductMaster:{
+      Id:null,Product_Id:null,FreeProduct_Id:null,FreeProductList:[],ProductList:[]
+    },EffectiveDate:new Date(),ExpiredDate:new Date((new Date()).setDate(20))
   }
   constructor(private _alertBox:AlertBoxService,
     private _commonService:CommonService,
@@ -39,6 +41,7 @@ export class OfferListComponent implements OnInit {
     this.getOfferSetupList();
     this.getUserFormControlByFormName();
   }
+  
   getUserFormControlByFormName(){
     this.blockUi.start("Loading....,Please wait.")
     this._commonService.getUserFormControlByFormName('offer-setup-list').subscribe(response=>{
@@ -74,18 +77,18 @@ export class OfferListComponent implements OnInit {
   getOfferSetUpDetails($event:OfferSetup){
     debugger
     this.blockUi.start("Loading....,Please wait.")
-    this._inventotyDefinationService.getOfferSetupById($event.OfferId).subscribe(response=>{
+    this._inventotyDefinationService.getOfferSetupById($event.Id).subscribe(response=>{
       this.blockUi.stop();
-      this.offerSetup=response
+      this.offer=response
       this._navigationData.IsUpdate=true;
-      this._navigationData.PreviousData=this.offerSetup.OfferId;
-      this.offerSetup.IsSingle?this.offerSetup.OfferType="single":this.offerSetup.OfferType="multiple"
+      this._navigationData.PreviousData=this.offer.OfferId;
+      this.offer.IsSingle?this.offer.OfferType="single":this.offer.OfferType="multiple"
       const dialogRef=this.matDialog.open(OfferEntryComponent,{
-        data:this.offerSetup,
+        data:this.offer,
         disableClose:true,
         height:'auto',
-        maxHeight:window.screen.height*.6+'px',
-        width:window.screen.width*.4+'px'
+        maxHeight:window.screen.height*.9+'px',
+        width:window.screen.width*.5+'px'
       });
       dialogRef.afterClosed().subscribe(result=>{
         if(result){
@@ -120,11 +123,11 @@ export class OfferListComponent implements OnInit {
   createNewOfferSetup(){
    this.clearOfferSetup();
     const dialogRef=this.matDialog.open(OfferEntryComponent,{
-      data:this.offerSetup,
+      data:this.offer,
       disableClose:true,
       height:'auto',
-      maxHeight:window.screen.height*.6+'px',
-      width:window.screen.width*.4+'px'
+      maxHeight:window.screen.height*.9+'px',
+      width:window.screen.width*.5+'px'
     });
     dialogRef.afterClosed().subscribe(result=>{
       if(result){
@@ -138,15 +141,14 @@ export class OfferListComponent implements OnInit {
     }
   }
   clearOfferSetup(){
-    this.offerSetup.Id=null;
-    this.offerSetup.OfferId=null;
-    this.offerSetup.OfferName=null;
-    this.offerSetup.IsSingle=true;
-    this.offerSetup.BundleSize=null;
-    this.offerSetup.IsOneToMany=false;
-    this.offerSetup.OfferType="single";
-    this.offerSetup.FreeProductList=[];
-    this.offerSetup.ProductList=[];
-    this.offerSetup.DiscountRate=0;
+    this.offer.Id=null;
+    this.offer.OfferId=null;
+    this.offer.OfferName=null;
+    this.offer.IsSingle=true;
+    this.offer.IsOneToMany=false;
+    this.offer.EffectiveDate=new Date()
+    this.offer.ExpiredDate=new Date((new Date()).setDate(20))
+    this.offer.OfferType="single";
+    this.offer.DiscountRate=0;
   }
 }

@@ -21,13 +21,9 @@ namespace ERP.DataService.Model.Model
         [Column(TypeName = "VARCHAR")]
         [StringLength(100)]
         public string Offer_Id { set; get; }
-        public bool? IsSingle { set; get; }
-        public bool? IsOneToMany { set; get; }
-        public bool? IsManyToOne { set; get; }
         [Column(TypeName = "VARCHAR")]
         [StringLength(100)]
         public string FreeProduct_Id { set; get; }
-        public decimal? DiscountRate { set; get; }
         public int? BundleSize { set; get; }
     }
 }

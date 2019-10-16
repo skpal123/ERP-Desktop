@@ -8,21 +8,25 @@
         </h5>
       </div>
       <div class="panel-body">
-        <form #offerSetupForm="ngForm">
+        <form #offerForm="ngForm">
           <div class="form-group row" [class.has-success]="offerTypeControl.valid">
             <label class="col-sm-4  control-label" for="offerType">Offer type</label>
             <div class="col-sm-7">
               <label class="radio-inline">
-                <input type="radio" name="offerType" [(ngModel)]="offerSetup.OfferType" #offerTypeControl="ngModel"
+                <input type="radio" name="offerType" [(ngModel)]="offer.OfferType" #offerTypeControl="ngModel"
                   value="single">Single<br>
               </label>
-              <label class="radio-inline">
-                <input type="radio" name="offerType" [(ngModel)]="offerSetup.OfferType" #offerTypeControl="ngModel"
+              <label class="radio-inline" >
+                <input type="radio" name="offerType" [(ngModel)]="offer.OfferType" #offerTypeControl="ngModel"
                   value="manyToOne">Multiple(many to one)<br>
               </label>
-              <label class="radio-inline">
-                <input type="radio" name="offerType" [(ngModel)]="offerSetup.OfferType" #offerTypeControl="ngModel"
-                  value="oneToMany">Multiple(one to many)<br>
+              <label class="radio-inline" >
+                <input type="radio" name="offerType" [(ngModel)]="offer.OfferType" #offerTypeControl="ngModel"
+                  value="oneToMany">Multiple(one to many)<br>  
+              </label>
+              <label class="radio-inline" >
+                <input type="radio" name="offerType" [(ngModel)]="offer.OfferType" #offerTypeControl="ngModel"
+                  value="manyTomany">Multiple(Many to many)<br>
               </label>
             </div>
           </div>
@@ -32,7 +36,7 @@
               [class.required]="offerIdControl.invalid">Offer Id</label>
             <div class="col-sm-6">
               <input class="form-control" name="offerId" #offerIdControl="ngModel" id="offerId"
-                [(ngModel)]="offerSetup.OfferId">
+                [(ngModel)]="offer.OfferId">
               <span class="help-block" *ngIf="offerIdControl.errors?.required&&offerIdControl.touched">
                 Offer Id feild is required
               </span>
@@ -51,18 +55,58 @@
               [class.required]="OfferNameControl.invalid">Offer Name</label>
             <div class="col-sm-7">
               <input class="form-control" name="OfferName" #OfferNameControl="ngModel" id="OfferName"
-                [(ngModel)]="offerSetup.OfferName">
+                [(ngModel)]="offer.OfferName">
               <span class="help-block" *ngIf="OfferNameControl.errors?.required&&OfferNameControl.touched">
                 Item name feild is required
               </span>
             </div>
           </div>
-          <div class="form-group row" *ngIf="!offerSetup.IsSingle">
+          <div class="form-group row" [class.has-suucess]="EffectiveDateControl.valid"
+          [ngClass]="{'has-error':EffectiveDateControl.invalid&&EffectiveDateControl.touched}">
+
+          <label class="col-sm-4 control-label" for="EffectiveDate">Effective Date<span
+              style="color: red;margin-left: 10px; size: 15px">*</span></label>
+          <div class="col-sm-8">
+            <div class="row">
+              <div class="col-md-10">
+                <input class="form-control" name="EffectiveDate" #EffectiveDateControl="ngModel" [(ngModel)]="offer.EffectiveDate" id="EffectiveDate" matInput
+                  [matDatepicker]="formDatePicker">
+              </div>
+              <div class="col-md-1">
+                <mat-datepicker-toggle matSuffix [for]="formDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #formDatePicker [startAt]="startDate"> </mat-datepicker>
+              </div>
+            </div>
+            <span class="help-block"
+              *ngIf="EffectiveDateControl.invalid&&EffectiveDateControl.touched">Required</span>
+          </div>
+          </div>
+          <div class="form-group row" [class.has-suucess]="ExpiredDateControl.valid"
+          [ngClass]="{'has-error':ExpiredDateControl.invalid&&ExpiredDateControl.touched}">
+
+          <label for="ExpiredDate" class="col-sm-4 control-label" >Expired Date<span
+              style="color: red;margin-left: 10px; size: 15px">*</span></label>
+          <div class="col-sm-8">
+            <div class="row">
+              <div class="col-md-10">
+                <input class="form-control" name="ExpiredDate" #ExpiredDateControl="ngModel" [(ngModel)]="offer.ExpiredDate" id="ExpiredDate" matInput
+                  [matDatepicker]="toDatePicker">
+              </div>
+              <div class="col-md-1">
+                <mat-datepicker-toggle matSuffix [for]="toDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #toDatePicker [startAt]="startDate"> </mat-datepicker>
+              </div>
+            </div>
+            <span class="help-block"
+              *ngIf="ExpiredDateControl.invalid&&ExpiredDateControl.touched">Required</span>
+          </div>
+          </div>
+          <div class="form-group row" *ngIf="!offer.IsSingle">
             <label for="ProductId" class="col-md-4"
               [class.required]="ProductIdControl.invalid">Product Name</label>
             <div class="col-sm-7">
               <input style="display: none;" name="ProductId" #ProductIdControl="ngModel"
-                [(ngModel)]="offerSetup.Product_Id">
+                [(ngModel)]="offer.Product_Id">
                 <app-custom-multi-select [selectedItem]="itemSelectedItems" [data]="itemDropdownList"
                 [showItem]="showItem" (getSelectedItemChild)="getSelectedProductParent($event)"
                 (showItemValue)="showItemValueParent($event)">
@@ -77,13 +121,13 @@
               </span>
             </div>
           </div>
-          <div *ngIf="!offerSetup.IsSingle">
+          <div *ngIf="!offer.IsSingle">
             <div class="form-group row">
               <label for="FreeProductId" class="col-sm-4 col-form-label control-label"
                 [class.required]="FreeProductIdControl.invalid">Free Product Name</label>
               <div class="col-sm-7">
                 <input style="display: none;" class="form-control" name="FreeProductId" #FreeProductIdControl="ngModel"
-                  [(ngModel)]="offerSetup.FreeProduct_Id">
+                  [(ngModel)]="offer.FreeProduct_Id">
                 <!-- <app-item-dropdown 
                            (itemOnItemSelect)="ItemOnSeletedItem($event)" 
                            (itemOnItemDeSelect)="OnDeSeletedItem($event)"
@@ -111,17 +155,17 @@
               <label for="BundleSize" class="col-sm-4 col-form-label control-label">Bundle Size</label>
               <div class="col-sm-7">
                 <input class="form-control" readonly name="BundleSize" id="BundleSize"
-                  [(ngModel)]="offerSetup.BundleSize">
+                  [(ngModel)]="offer.ProductMaster.BundleSize">
               </div>
             </div>
           </div>
-          <div *ngIf="offerSetup.IsSingle" class="form-group row" [class.has-success]="DiscountRateControl.valid&&DiscountRateControl.touched"
+          <div *ngIf="offer.IsSingle" class="form-group row" [class.has-success]="DiscountRateControl.valid&&DiscountRateControl.touched"
             [class.has-error]="DiscountRateControl.invalid&&DiscountRateControl.touched">
             <label for="discountRate" class="col-sm-4 col-form-label control-label"
               [class.required]="DiscountRateControl.invalid">Discount rate( % )</label>
             <div class="col-sm-7">
               <input class="form-control" name="discountRate" #DiscountRateControl="ngModel" id="discountRate"
-                [(ngModel)]="offerSetup.DiscountRate">
+                [(ngModel)]="offer.DiscountRate">
               <span class="help-block" *ngIf="DiscountRateControl.errors?.required&&DiscountRateControl.touched">
                 Discount rate is required
               </span>
@@ -130,11 +174,11 @@
 
           <div class="row">
             <div class="col-md-2 pull-right">
-              <input type="button" [disabled]="offerSetupForm.invalid" (click)="saveItem()"
-                value="{{offerSetup.Id==null?'Save':'Update'}}" class="btn btn-primary">
+              <input type="button" [disabled]="offerForm.invalid" (click)="saveItem()"
+                value="{{offer.Id==null?'Save':'Update'}}" class="btn btn-primary">
             </div>
             <div class="col-md-2 pull-right">
-              <input type="button" [disabled]="!offerSetupForm.dirty" (click)="clearItem()" value="Clear"
+              <input type="button" [disabled]="!offerForm.dirty" (click)="clearItem()" value="Clear"
                 class="btn btn-primary">
             </div>
           </div>

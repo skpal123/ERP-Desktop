@@ -2,11 +2,9 @@ import { Component, OnInit, ViewChild,Inject } from '@angular/core';
 import { MultiSelectDropdown } from '../../../models/common/multiselect.dropdown.model';
 import { OfferSetupValidation } from '../../../models/validation/inventory/offer-setup-validation.model';
 import { NgForm, FormControl } from '@angular/forms';
-import { OfferSetup } from '../../../models/master-settings/inventory-defination/offer-setup.model';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { ValidationService } from '../../../services/common/validation.service';
 import { AlertBoxService } from '../../../shared/alert-box.service';
-import { NewDropdownDataService } from '../../../common-module/new-dropdown-data.service';
 import { DropdownService } from '../../../services/common/dropdown.service';
 import { InventoryDefinationServiceService } from '../../../services/master-settings/inventory-defination-service.service';
 import { DialogData } from '../../../models/common/dialog-data.model';
@@ -15,6 +13,7 @@ import { NavigationDataService } from '../../../services/common/navigation-data.
 import { ItemEntryComponent } from '../item-entry/item-entry.component';
 import { InventoryItem } from '../../../models/master-settings/inventory-defination/inventory-item.model';
 import { Tree } from '../../../models/common/tree.model';
+import { Offer } from '../../../models/master-settings/inventory-defination/offer.model';
 
 @Component({
   selector: 'app-offer-entry',
@@ -23,12 +22,12 @@ import { Tree } from '../../../models/common/tree.model';
 })
 export class OfferEntryComponent implements OnInit {
   offerSetupValidation:OfferSetupValidation[]=[];
-  @ViewChild('offerSetupForm') offerSetupForm:NgForm;
+  @ViewChild('offerForm') offerSetupForm:NgForm;
   @ViewChild('offerTypeControl') offerTypeControl:FormControl;
   itemList:SelectDropdown[]=[]
   ItemNew:boolean=false
   itemName:string="offerId";
-  formName:string="offerSetup-entry";
+  formName:string="offer-entry";
   itemNew:boolean=false;
   subCategoryId:string=null;
   showItem:boolean=true
@@ -51,7 +50,7 @@ export class OfferEntryComponent implements OnInit {
   oldItemTree:Tree[]=[];
   constructor(public matDialogRef:MatDialogRef<OfferEntryComponent>,
     private _validationService:ValidationService,
-  @Inject(MAT_DIALOG_DATA) public offerSetup:OfferSetup,
+  @Inject(MAT_DIALOG_DATA) public offer:Offer,
   private _alertBox:AlertBoxService,
   private matDialog:MatDialog,
   private _dropdownService:DropdownService,
@@ -69,32 +68,56 @@ export class OfferEntryComponent implements OnInit {
     this.offerTypeControl.valueChanges.subscribe(data=>{
       debugger
       if(data=="single"){
-        this.offerSetup.IsSingle=true
+        this.offer.IsSingle=true
+        this.offer.IsManyToMany=false
+        this.offer.IsOneToMany=false
+        this.offer.IsManyToOne=false
       }
       else if(data=="oneToMany"){
-        this.offerSetup.IsSingle=false;
-        this.offerSetup.IsOneToMany=true;
+        this.offer.IsSingle=false
+        this.offer.IsManyToMany=false
+        this.offer.IsOneToMany=true
+        this.offer.IsManyToOne=false
       }
       else if(data=="manyToOne"){
-        this.offerSetup.IsSingle=false;
-        this.offerSetup.IsManyToOne=true;
+        this.offer.IsSingle=false
+        this.offer.IsManyToMany=false
+        this.offer.IsOneToMany=false
+        this.offer.IsManyToOne=true
+      }
+      else if(data=="manyTomany"){
+        this.offer.IsSingle=false
+        this.offer.IsManyToMany=false
+        this.offer.IsOneToMany=false
+        this.offer.IsManyToOne=true
       }
     })
-    if(this.offerSetup.OfferId==null){      
+    if(this.offer.Id==null){
+      this.getItemTree();
     }
     else{
-      this.freeItemSelectedItems=this.offerSetup.FreeProductList
-      this.itemSelectedItems=this.offerSetup.ProductList
+      this.freeItemSelectedItems=this.offer.ProductMaster!=null?this.offer.ProductMaster.FreeProductList:this.freeItemSelectedItems
+      this.itemSelectedItems=this.offer.ProductMaster!=null?this.offer.ProductMaster.ProductList:this.itemSelectedItems
+      this.getItemTreeByOfferId(this.offer.Id)
     }
+    this.getItemFormInfo(); 
     this.getItemList(null);
-    this.getItemFormInfo();
-    this.getItemTree();
   }
   onNoClick(){
     this.matDialogRef.close(false);
   }
   getItemTree(){
     this._inventotyDefinationService.getitemTree().subscribe(response=>{
+      this.itemTree=response;
+      this.oldItemTree=JSON.parse(JSON.stringify(response));
+    },error=>{
+      let dialogData=new DialogData();
+      dialogData.message=error
+      this._alertBox.openDialog(dialogData);
+    })
+  }
+  getItemTreeByOfferId(offerId:string){
+    this._inventotyDefinationService.getitemTreeByOfferId(offerId).subscribe(response=>{
       this.itemTree=response;
       this.oldItemTree=JSON.parse(JSON.stringify(response));
     },error=>{
@@ -163,13 +186,9 @@ export class OfferEntryComponent implements OnInit {
   }
   saveItem(){
     debugger
-    // this.offerSetup.FreeProductList=this.freeItemSelectedItems;
-    // this.offerSetup.ProductList=this.itemSelectedItems;
-    if(this.offerSetup.ProductList.length==1&&this.offerSetup.ProductList.length>1){
-      this.offerSetup.IsOneToMany=true
-    }
-    if(this.offerSetup.Id==null){
-      this._inventotyDefinationService.CreateOfferSetup(this.offerSetup).subscribe(response=>{
+    this.leafNodeChecked(this.itemTree);
+    if(this.offer.Id==null){
+      this._inventotyDefinationService.CreateOfferSetup(this.offer).subscribe(response=>{
         let result=response;
         this._navigationData.IsSaved=true
         if(result){
@@ -185,7 +204,7 @@ export class OfferEntryComponent implements OnInit {
       })
     }
     else{
-      this._inventotyDefinationService.UpdateOfferSetup(this.offerSetup).subscribe(response=>{
+      this._inventotyDefinationService.UpdateOfferSetup(this.offer).subscribe(response=>{
         let result=response
         if(result){
           this.matDialogRef.close(true);
@@ -199,6 +218,18 @@ export class OfferEntryComponent implements OnInit {
         this._alertBox.openDialog(dialogData);
       })
     }
+  }
+  leafNodeChecked(trees:Tree[]){
+    trees.forEach((tt,index,array)=>{
+      if(tt.Children!=null&&tt.Children.length>0){
+        this.leafNodeChecked(tt.Children)
+      }
+      else{
+        if(tt.Checked){
+          this.offer.ProductMaster.ProductList.push({id:tt.Id,itemName:null})
+        }
+      }
+    })
   }
   getItemList(subCategoryId:string){
     this._dropdownService.getItemDropdownList(subCategoryId).subscribe(response=>{
@@ -242,35 +273,37 @@ export class OfferEntryComponent implements OnInit {
     this.inventoryItem.Ledger_Id=null;
     this.inventoryItem.SubLedger_Id=null;
   }
-   getItemFormInfo(){
-    // this._validationService.getItemValidationData().subscribe((response:InventoryItemValidation[])=>{
-    //   this.itemValidation=response
-    // },error=>{
-    //   let message=error;
-    //   let dialogData=new DialogData();
-    //   dialogData.message=message.Message;
-    //   this._alertBox.openDialog(dialogData);
-    // })
+  getItemFormInfo(){
+    this._validationService.getOfferValidationData().subscribe((response:OfferSetupValidation[])=>{
+      this.offerSetupValidation=response;
+      if(this.offerSetupValidation[2].OfferId&&this.offer.Id==null){
+        this.IsAutoCode=true
+      }
+    },error=>{
+      let dialogData=new DialogData();
+      dialogData.message=error
+      this._alertBox.openDialog(dialogData);
+    })
   }
   parentGetGeneratedCode($event:string){
     debugger
-    this.offerSetup.OfferId=$event;
+    this.offer.OfferId=$event;
   }
   getSelectedItemParent($event:MultiSelectDropdown){
     debugger
-    this.offerSetup.FreeProductList.push($event)
+    this.offer.ProductMaster.FreeProductList.push($event)
   }
   getSelectedProductParent($event:MultiSelectDropdown){
     debugger
-    this.offerSetup.ProductList.push($event)
-    this.offerSetup.BundleSize=this.offerSetup.ProductList.length
+    this.offer.ProductMaster.ProductList.push($event)
+    this.offer.ProductMaster.BundleSize=this.offer.ProductMaster.ProductList.length
   }
   ItemOnSeletedItem($event:MultiSelectDropdown){
     if($event.id!="0"){
-      this.offerSetup.Product_Id=$event.id
+      this.offer.ProductMaster.Product_Id=$event.id
     }
     else{
-      this.offerSetup.Product_Id=null
+      this.offer.ProductMaster.Product_Id=null
     }
   }
   showItemValueParent($event:boolean){

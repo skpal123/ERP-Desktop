@@ -1023,30 +1023,20 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                List<OfferSetupInfo> offerSetupInfos = new List<OfferSetupInfo>();
-                using (SqlConnection con = new SqlConnection(ConnectionString.getConnectionString()))
+                var offers = ERPContext.Offers.Select(x => new OfferInfo()
                 {
-                    SqlCommand cmd = new SqlCommand(@"select distinct a.DiscountRate,a.BundleSize,a.OfferId,
-                                                    a.OfferName from tblofferSetup 
-                                                    a inner join tblInventoryItem b on a.Product_Id=b.Id", con);
-                    con.Open();
-                    SqlDataReader rdr = cmd.ExecuteReader();
-                    while (rdr.Read())
-                    {
-                        OfferSetupInfo offerSetupInfo = new OfferSetupInfo();
-                        offerSetupInfo.OfferId = rdr["OfferId"] != DBNull.Value ? rdr["OfferId"].ToString() : null;
-                        offerSetupInfo.OfferName = rdr["OfferName"] != DBNull.Value ? rdr["OfferName"].ToString() : null;
-                        //offerSetupInfo.ProductName = rdr["ProductName"] != DBNull.Value ? rdr["ProductName"].ToString() : null;          
-                        offerSetupInfo.DiscountRate = rdr["DiscountRate"] != DBNull.Value ? Convert.ToDecimal(rdr["DiscountRate"]) : 0;
-                        offerSetupInfo.BundleSize = rdr["BundleSize"] != DBNull.Value ? Convert.ToInt32(rdr["BundleSize"]) : 0;
-                        //if (rdr["Product_Id"] != DBNull.Value)
-                        //{
-                        //    offerSetupInfo.Product_Id = (rdr["Product_Id"].ToString());
-                        //}                     
-                        offerSetupInfos.Add(offerSetupInfo);
-                    }
-                }
-                return Request.CreateResponse(HttpStatusCode.OK, offerSetupInfos);
+                    Id = x.Id,
+                    CreatedDate = x.CreatedDate,
+                    EffectiveDate = x.EffectiveDate,
+                    ExpiredDate = x.ExpiredDate,
+                    IsDiscountRate = x.IsDiscountRate,
+                    IsSingle = x.IsSingle,
+                    OfferId = x.OfferId,
+                    DiscountRate = x.DiscountRate,
+                    OfferName = x.OfferName,
+                    OfferType = x.OfferType
+                }).ToList();
+                return Request.CreateResponse(HttpStatusCode.OK, offers);
             }
             catch (Exception ex)
             {
@@ -1055,53 +1045,91 @@ namespace ERPWebApiService.Controllers
         }
         [Route("OfferSetup")]
         [HttpPost]
-        public HttpResponseMessage CreateOfferSetup(OfferSetupInfo offerSetupInfo)
+        public HttpResponseMessage CreateOfferSetup(OfferInfo offerSetupInfo)
         {
             try
             {
-                if (offerSetupInfo.IsSingle)
+                Offer offer = new Offer()
                 {
-                    //OfferSetup offerSetup = new OfferSetup()
-                    //{
-                    //    Id = Guid.NewGuid().ToString(),
-                    //    OfferId = offerSetupInfo.OfferId,
-                    //    OfferName = offerSetupInfo.OfferName,
-                    //    Product_Id = offerSetupInfo.Product_Id,
-                    //    DiscountRate = offerSetupInfo.DiscountRate,
-                    //    BundleSize = offerSetupInfo.BundleSize,
-                    //    IsOneToMany = false,
-                    //    IsSingle = true
-                    //};
-                    //ERPContext.OfferSetups.Add(offerSetup);
-                    //ERPContext.SaveChanges();
-                }
-                else 
+                    Id = Guid.NewGuid().ToString(),
+                    OfferId = offerSetupInfo.OfferId,
+                    OfferName = offerSetupInfo.OfferName,
+                    CreatedDate = offerSetupInfo.CreatedDate,
+                    ExpiredDate = offerSetupInfo.ExpiredDate,
+                    EffectiveDate = offerSetupInfo.EffectiveDate,
+                    IsDiscountRate = offerSetupInfo.IsDiscountRate,
+                    IsSingle = offerSetupInfo.IsSingle,
+                    DiscountRate = offerSetupInfo.DiscountRate,
+                    IsManyToOne = offerSetupInfo.IsManyToOne,
+                    IsOneToMany = offerSetupInfo.IsOneToMany,
+                    IsManyToMany = offerSetupInfo.IsManyToOne
+                };
+                ERPContext.Offers.Add(offer);
+                if (offerSetupInfo.IsSingle==true)
                 {
-                    DataTable dt=new DataTable();
-                    dt.Columns.Add("Id", typeof(Guid));
-                    dt.Columns.Add("Product_Id", typeof(Guid));
-                    dt.Columns.Add("FreeProduct_Id", typeof(Guid));
-                    dt.Columns.Add("DiscountRate", typeof(decimal));
-                    dt.Columns.Add("BundleSize", typeof(Int32));
-                    dt.Columns.Add("OfferName", typeof(string));
-                    dt.Columns.Add("OfferId", typeof(string));
-                    dt.Columns.Add("IsSingle", typeof(bool));
-                    dt.Columns.Add("IsOneToMany", typeof(bool));
-                    dt.Columns.Add("IsManyToOne", typeof(bool));
-                    foreach (var product in offerSetupInfo.ProductList)
+                    foreach (var product in offerSetupInfo.ProductMaster.ProductList)
                     {
-                        foreach (var freeProduct in offerSetupInfo.FreeProductList)
+                        var productOfferMaster = new ProductOfferMaster()
                         {
-                            dt.Rows.Add(Guid.NewGuid().ToString(), product.Id, freeProduct.Id,
-                                offerSetupInfo.DiscountRate, offerSetupInfo.BundleSize, offerSetupInfo.OfferName,
-                                offerSetupInfo.OfferId, false,offerSetupInfo.IsOneToMany,offerSetupInfo.IsManyToOne);
-                        }
+                            Id = Guid.NewGuid().ToString(),
+                            Offer_Id = offer.Id,
+                            Product_Id = product.Id,                          
+                            BundleSize = offerSetupInfo.ProductMaster.BundleSize
+                        };
+                        ERPContext.ProductOfferMasters.Add(productOfferMaster);
                     }
-                    Dictionary<string, object> paramlist = new Dictionary<string, object>();
-                    paramlist.Add("@TypeOfferSetup", dt);
-                    DatabaseCommand.ExcuteObjectNonQuery("proc_saveOfferSetup", paramlist, "procedure");
                 }
-                return Request.CreateResponse(HttpStatusCode.Created, true);
+                else if (offerSetupInfo.IsOneToMany && offerSetupInfo.ProductMaster.FreeProductList.Any())
+                {
+                    foreach (var product in offerSetupInfo.ProductMaster.FreeProductList)
+                    {
+                        var productOfferMaster = new ProductOfferMaster()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Offer_Id = offer.Id,
+                            Product_Id = offerSetupInfo.ProductMaster.Product_Id,                          
+                            BundleSize = offerSetupInfo.ProductMaster.BundleSize,
+                            FreeProduct_Id = product.Id
+                        };
+                        ERPContext.ProductOfferMasters.Add(productOfferMaster);
+                    }
+                }
+                else if (offerSetupInfo.IsManyToOne&&offerSetupInfo.ProductMaster.ProductList.Any())
+                {
+                    foreach (var product in offerSetupInfo.ProductMaster.ProductList)
+                    {
+                        var productOfferMaster = new ProductOfferMaster()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Offer_Id = offer.Id,
+                            Product_Id = product.Id,                          
+                            BundleSize = offerSetupInfo.ProductMaster.BundleSize,
+                            FreeProduct_Id = offerSetupInfo.ProductMaster.FreeProduct_Id
+                        };
+                        ERPContext.ProductOfferMasters.Add(productOfferMaster);
+                    }
+                }
+                else if (offerSetupInfo.IsManyToMany&&offerSetupInfo.ProductMaster.FreeProductList.Any() &&offerSetupInfo.ProductMaster.ProductList.Any())
+                {
+                    foreach (var product in offerSetupInfo.ProductMaster.ProductList)
+                    {
+                        foreach (var freeProduct in offerSetupInfo.ProductMaster.FreeProductList)
+                        {
+                            var productOfferMaster = new ProductOfferMaster()
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Offer_Id = offer.Id,
+                                Product_Id = product.Id,                              
+                                BundleSize = offerSetupInfo.ProductMaster.BundleSize,
+                                FreeProduct_Id =freeProduct.Id
+                            };
+                            ERPContext.ProductOfferMasters.Add(productOfferMaster);
+                        }
+                       
+                    }
+                }
+                ERPContext.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.Created, offer);
             }
             catch (Exception ex)
             {
@@ -1166,63 +1194,32 @@ namespace ERPWebApiService.Controllers
 //                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
 //            }
 //        }
-//        [Route("OfferSetup/{id}")]
-//        [HttpGet]
-//        public HttpResponseMessage GetOfferSetupId(string id)
-//        {
-//            try
-//            {
-//                OfferSetupInfo offerSetupInfo = new OfferSetupInfo();
-//                using (SqlConnection con = new SqlConnection(ConnectionString.getConnectionString()))
-//                {
-//                    SqlCommand cmd = new SqlCommand(@"select a.*,b.ItemName ProductName from tblofferSetup 
-//                                                    a inner join tblInventoryItem b on a.Product_Id=b.Id where a.OfferId=@id", con);
-//                    cmd.Parameters.AddWithNullableValue("@id",id);
-//                    con.Open();
-//                    SqlDataReader rdr = cmd.ExecuteReader();
-//                    while (rdr.Read())
-//                    {
-//                        offerSetupInfo.Id = (rdr["Id"].ToString());
-//                        offerSetupInfo.OfferId = rdr["OfferId"] != DBNull.Value ? rdr["OfferId"].ToString() : null;
-//                        offerSetupInfo.OfferName = rdr["OfferName"] != DBNull.Value ? rdr["OfferName"].ToString() : null;
-//                        offerSetupInfo.ProductName = rdr["ProductName"] != DBNull.Value ? rdr["ProductName"].ToString() : null;
-//                        offerSetupInfo.DiscountRate = rdr["DiscountRate"] != DBNull.Value ? Convert.ToDecimal(rdr["DiscountRate"]) : 0;
-//                        offerSetupInfo.BundleSize = rdr["BundleSize"] != DBNull.Value ? Convert.ToInt32(rdr["BundleSize"]) : 0;
-//                        if (rdr["Product_Id"] != DBNull.Value)
-//                        {
-//                            offerSetupInfo.Product_Id = (rdr["Product_Id"].ToString());
-//                        }
-//                        if (rdr["IsSingle"] != DBNull.Value)
-//                        {
-//                            offerSetupInfo.IsSingle = Convert.ToBoolean(rdr["IsSingle"].ToString());
-//                        }
-//                        offerSetupInfo.FreeProductList = (from offer in ERPContext.OfferSetups
-//                            join item in ERPContext.InventoryItems on offer.FreeProduct_Id equals item.Id
-//                            where offer.OfferId == id
-//                            select new FreeProductInfo()
-//                            {
-//                                Id = item.Id,
-//                                itemName = item.ItemId+"-"+item.ItemName
-//                            }).DistinctBy(x=>x.itemName).ToList();
-//                        offerSetupInfo.ProductList = (from offer in ERPContext.OfferSetups
-//                            join item in ERPContext.InventoryItems on offer.Product_Id equals item.Id
-//                            where offer.OfferId == id
-//                            select new FreeProductInfo()
-//                            {
-//                                Id = item.Id,
-//                                itemName = item.ItemId + "-" + item.ItemName
-//                            }).DistinctBy(x => x.itemName).ToList();
-
-
-//                    }
-//                }
-//                return Request.CreateResponse(HttpStatusCode.OK, offerSetupInfo);
-//            }
-//            catch (Exception ex)
-//            {
-//                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
-//            }
-//        }
+        [Route("OfferSetup/{id}")]
+        [HttpGet]
+        public HttpResponseMessage GetOfferSetupId(string id)
+        {
+            try
+            {
+                var offer = ERPContext.Offers.Where(x => x.Id == id).Select(x => new OfferInfo()
+                {
+                    Id = x.Id,
+                    CreatedDate = x.CreatedDate,
+                    EffectiveDate = x.EffectiveDate,
+                    ExpiredDate = x.ExpiredDate,
+                    IsDiscountRate = x.IsDiscountRate,
+                    DiscountRate = x.DiscountRate,
+                    IsSingle = x.IsSingle,
+                    OfferId = x.OfferId,
+                    OfferName = x.OfferName,
+                    OfferType = x.OfferType
+                }).FirstOrDefault();
+                return Request.CreateResponse(HttpStatusCode.OK, offer);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
         [Route("OfferSetup/{id}")]
         [HttpDelete]
         public HttpResponseMessage DeleteOfferSetUp(string id)
@@ -1907,6 +1904,7 @@ namespace ERPWebApiService.Controllers
                         settingSellPrice.ItemCode = rdr["ItemCode"] != DBNull.Value ? rdr["ItemCode"].ToString() : null;
                         settingSellPrice.ItemName = rdr["ItemName"] != DBNull.Value ? rdr["ItemName"].ToString() : null;
                         settingSellPrice.Amount = rdr["Amount"] != DBNull.Value ? Convert.ToInt32(rdr["Amount"]) : 0;
+                        settingSellPrice.WholeSaleAmount = rdr["WholeSaleAmount"] != DBNull.Value ? Convert.ToInt32(rdr["WholeSaleAmount"]) : 0;
                         settingSellPrice.PreviousAmount = settingSellPrice.Amount;
                         if (rdr["PurchaseDate"] != DBNull.Value)
                         {
@@ -2679,14 +2677,14 @@ namespace ERPWebApiService.Controllers
         }
         [Route("getItemTree/{offerId}")]
         [HttpGet]
-        public HttpResponseMessage GetRolePermissionsByRoleId(string offerId)
+        public HttpResponseMessage GetofferItemTree(string offerId)
         {
             try
             {
                 List<OfferItemInfo> offerItemInfos = new List<OfferItemInfo>();
                 using (SqlConnection con = new SqlConnection(ConnectionString.getConnectionString()))
                 {
-                    SqlCommand cmd = new SqlCommand("select * from func_get_inventory_item_tree(@offerId) order by CategoryName,SubCategoryName,ItemName", con);
+                    SqlCommand cmd = new SqlCommand("select * from func_get_inventory_item_tree_by_offerid(@offerId) order by CategoryName,SubCategoryName,ItemName", con);
                     cmd.Parameters.AddWithNullableValue("@offerId", offerId);
                     con.Open();
                     SqlDataReader rdr = cmd.ExecuteReader();

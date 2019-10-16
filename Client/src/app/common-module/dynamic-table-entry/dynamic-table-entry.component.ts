@@ -61,6 +61,7 @@ export class DynamicTableEntryComponent implements OnInit,OnChanges {
     this.DeleteDataRowClicked.emit(index);
   }
   GetColumnValue(value:number,name:string,index:number){
+    debugger
     this.data.name=name;
     this.data.value=value;
     this.data.index=index;
@@ -71,10 +72,12 @@ export class DynamicTableEntryComponent implements OnInit,OnChanges {
     alert(this.Datalist[0].Name)
   }
   datatableTextColumnClicked($data:any,columnName:string,index:number){
+    debugger
     this.datatableTextOutput.ColumnName=columnName;
     this.datatableTextOutput.RowData=$data;
     this.datatableTextOutput.Index=index;
     this.GetDatatableColumnTextClicked.emit(this.datatableTextOutput);
+    
   }
   addNewRow(){
     this.AddNewRow.emit();

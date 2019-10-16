@@ -7,9 +7,6 @@ export class ProductOfferMap{
     public FreeProduct_Id ?:string
     public FreeProductList?:MultiSelectDropdown[]
     public ProductList?:MultiSelectDropdown[]
-    public DiscountRate ?:number
     public BundleSize?:number
-    public IsOneToMany?:boolean;
-    public IsManyToOne?:boolean;
     public ViewFreeProduct?:string;
 }

@@ -7,6 +7,7 @@ import { PostLoginService } from '../../../services/common/post-login.service';
 import { AlertBoxService } from '../../../shared/alert-box.service';
 import { DialogData } from '../../../models/common/dialog-data.model';
 import { FormControl } from '@angular/forms';
+import { DatatableTextOutput } from '../../../models/common/datatable-text-click.model';
 
 @Component({
   selector: 'app-setting-price',
@@ -20,6 +21,7 @@ export class SettingPriceComponent implements OnInit {
   firstTime:boolean=true;
   @BlockUI() blockUI: NgBlockUI;
   settingSellPriceList:SettingSellprice[]=[];
+  settingSellprice:SettingSellprice={}
   userControlList:UserFormControl[]=[];
   columnlist:any[]=[];
   DataList:SettingSellprice[]=[];
@@ -71,21 +73,22 @@ export class SettingPriceComponent implements OnInit {
   getDataList(){
 
   }
-  GetColumnValueClicked($event:{name:string,value:number,index:number}){
+  GetColumnValueClicked($event:DatatableTextOutput){
     debugger
-    if($event.name.toLowerCase()=='profitmargin'){
-      this.addProfitMargin($event)
+    this.settingSellprice=$event.RowData;
+    if($event.ColumnName.toLowerCase()=='profitmargin'){
+      this.addProfitMargin($event.Index,$event)
     }
-    else if($event.name.toLowerCase()=='amount'){
-      this.oldSettingSellPriceList[$event.index].Amount=$event.value;
-      this.addProfitMargin($event)
+    else if($event.ColumnName.toLowerCase()=='amount'){
+      this.oldSettingSellPriceList[$event.Index].Amount=this.settingSellprice.Amount;
+      this.addProfitMargin($event.Index,$event)
     }
   }
-  addProfitMargin(event:{name:string,value:number,index:number}){
+  addProfitMargin(index:number,event:DatatableTextOutput){
     this.settingSellPriceList=JSON.parse(JSON.stringify(this.oldSettingSellPriceList));
-    if(this.oldSettingSellPriceList[event.index].Amount>0){
-      let percentage=event.name.toLowerCase()=='profitmargin'?event.value:this.DataList[event.index].ProfitMargin
-      this.DataList[event.index].Amount=this.oldSettingSellPriceList[event.index].Amount+(this.oldSettingSellPriceList[event.index].Amount*percentage)/100
+    if(this.oldSettingSellPriceList[index].Amount>0){
+      let percentage= this.DataList[index].ProfitMargin
+      this.DataList[index].Amount=this.oldSettingSellPriceList[index].Amount+(this.oldSettingSellPriceList[index].Amount*percentage)/100
     }
   }
   SaveSettingSellPrice(){

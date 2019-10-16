@@ -25,6 +25,10 @@ namespace ERP.DataService.Model.Model
         public DateTime? EffectiveDate { set; get; }
         public DateTime? ExpiredDate { set; get; }
         public bool? IsDiscountRate { set; get; }
+        public double DiscountRate { set; get; }
         public bool? IsSingle { set; get; }
+        public bool IsOneToMany { set; get; }
+        public bool IsManyToOne { set; get; }
+        public bool IsManyToMany { set; get; }
     }
 }

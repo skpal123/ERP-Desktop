@@ -15,6 +15,7 @@ import { Customer } from '../../models/master-settings/inventory-defination/cust
 import { SettingSellprice } from '../../models/master-settings/inventory-defination/setting-sell-price.model';
 import { OfferSetup } from '../../models/master-settings/inventory-defination/offer-setup.model';
 import { Tree } from '../../models/common/tree.model';
+import { Offer } from '../../models/master-settings/inventory-defination/offer.model';
 
 @Injectable({
   providedIn: 'root'
@@ -214,17 +215,17 @@ export class InventoryDefinationServiceService {
     var url=this._defaultRoute.InventoryService+'OfferSetups';
     return this._httpClient.get<OfferSetup[]>(url)
   }
-  public CreateOfferSetup(offerSetup:OfferSetup){
+  public CreateOfferSetup(offer:Offer){
     var url=this._defaultRoute.InventoryService+'OfferSetup';
-    return this._httpClient.post<OfferSetup>(url,offerSetup)
+    return this._httpClient.post<Offer>(url,offer)
   }
-  public UpdateOfferSetup(offerSetup:OfferSetup){
-    var url=this._defaultRoute.InventoryService+'OfferSetup/'+offerSetup.OfferId;
-    return this._httpClient.put<boolean>(url,offerSetup)
+  public UpdateOfferSetup(offer:Offer){
+    var url=this._defaultRoute.InventoryService+'OfferSetup/'+offer.OfferId;
+    return this._httpClient.put<boolean>(url,offer)
   }
   public getOfferSetupById(Id:string){
     var url=this._defaultRoute.InventoryService+'OfferSetup/'+Id;
-    return this._httpClient.get<OfferSetup>(url)
+    return this._httpClient.get<Offer>(url)
   }
   public deleteOfferSetup(Id:string){
     var url=this._defaultRoute.InventoryService+'OfferSetup/'+Id;

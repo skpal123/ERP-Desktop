@@ -22,6 +22,7 @@ namespace ERP.DataService.Model.Model
         public DateTime? PurchaseDate { set; get; }
         public decimal PreviousAmount { set; get; }
         public decimal Amount { set; get; }
+        public decimal WholeSaleAmount { set; get; }
         [Column(TypeName = "VARCHAR")]
         [StringLength(100)]
         public string Item_Id { set; get; }

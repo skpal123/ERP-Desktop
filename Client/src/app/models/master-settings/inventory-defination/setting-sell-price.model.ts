@@ -5,6 +5,7 @@ export class SettingSellprice{
     public PurchaseDate?:Date
     public PreviousAmount?:number;
     public ProfitMargin?:number;
+    public WholeSaleAmount?:number;
     public Amount?:number;
     public ItemName?:number;
     public Item_Id?:string;

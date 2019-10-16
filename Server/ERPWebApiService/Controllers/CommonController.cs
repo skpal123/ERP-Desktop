@@ -1065,5 +1065,43 @@ namespace ERPWebApiService.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+        [Route("offerValidation")]
+        [HttpGet]
+        public HttpResponseMessage OfferValidation()
+        {
+            try
+            {
+                List<OfferValidation> formValidationList = new List<OfferValidation>();
+                using (SqlConnection con = new SqlConnection(ConnectionString.getConnectionString()))
+                {
+                    SqlCommand cmd = new SqlCommand("sp_get_formControlNameByFormName", con);
+                    cmd.Parameters.AddWithValue("@formName", "offer-entry");
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    con.Open();
+                    SqlDataReader rdr = cmd.ExecuteReader();
+                    while (rdr.Read())
+                    {
+                        OfferValidation fromValidation = new OfferValidation();
+                        fromValidation.CreatedDate = Convert.ToBoolean(rdr["CreatedDate"]);
+                        fromValidation.EffectiveDate = Convert.ToBoolean(rdr["EffectiveDate"]);
+                        fromValidation.ExpiredDate = Convert.ToBoolean(rdr["ExpiredDate"]);
+                        fromValidation.IsManyToMany = Convert.ToBoolean(rdr["IsManyToMany"]);
+                        fromValidation.IsManyToOne = Convert.ToBoolean(rdr["IsManyToOne"]);
+                        fromValidation.IsOneToMany = Convert.ToBoolean(rdr["IsOneToMany"]);
+                        fromValidation.IsSingle = Convert.ToBoolean(rdr["IsSingle"]);
+                        fromValidation.OfferId = Convert.ToBoolean(rdr["OfferId"]);
+                        fromValidation.OfferName = Convert.ToBoolean(rdr["OfferName"]);
+                        fromValidation.OfferType = Convert.ToBoolean(rdr["OfferType"]);
+                        fromValidation.DiscountRate = Convert.ToBoolean(rdr["DiscountRate"]);
+                        formValidationList.Add(fromValidation);
+                    }
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, formValidationList);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
     }
 }

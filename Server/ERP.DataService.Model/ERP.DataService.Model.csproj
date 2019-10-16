@@ -343,6 +343,18 @@
     <Compile Include="Migrations\201909110403465_ChangeOfferModule.Designer.cs">
       <DependentUpon>201909110403465_ChangeOfferModule.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201910040602140_change offer table.cs" />
+    <Compile Include="Migrations\201910040602140_change offer table.Designer.cs">
+      <DependentUpon>201910040602140_change offer table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910041041332_change datatype.cs" />
+    <Compile Include="Migrations\201910041041332_change datatype.Designer.cs">
+      <DependentUpon>201910041041332_change datatype.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910050813300_add wholesale.cs" />
+    <Compile Include="Migrations\201910050813300_add wholesale.Designer.cs">
+      <DependentUpon>201910050813300_add wholesale.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\AccountOpening.cs" />
     <Compile Include="Model\AccountParentChildRelation.cs" />
@@ -615,6 +627,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201909110403465_ChangeOfferModule.resx">
       <DependentUpon>201909110403465_ChangeOfferModule.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910040602140_change offer table.resx">
+      <DependentUpon>201910040602140_change offer table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910041041332_change datatype.resx">
+      <DependentUpon>201910041041332_change datatype.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910050813300_add wholesale.resx">
+      <DependentUpon>201910050813300_add wholesale.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

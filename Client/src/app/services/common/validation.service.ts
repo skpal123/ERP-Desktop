@@ -102,4 +102,8 @@ export class ValidationService {
       var url=this._defaultRoute.CommonService+'subledgerValidation';
       return this._httpClient.get(url)
     }
+    public getOfferValidationData(){
+      var url=this._defaultRoute.CommonService+'offerValidation';
+      return this._httpClient.get(url)
+    }
 }

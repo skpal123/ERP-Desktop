@@ -23,10 +23,11 @@ export class FormValidationInfoComponent implements OnInit {
   getFormInfoList(){
     this._validationService.getFormInfoList(this.formName).subscribe((response:FormInfo[])=>{
       this.formInfoList=response
+      console.log(response)
     },error=>{
       let message=error
       let dialogData=new DialogData();
-      dialogData.message=message.Message;
+      dialogData.message=message.Message; 
       this._alertBox.openDialog(dialogData);
     })
   }
