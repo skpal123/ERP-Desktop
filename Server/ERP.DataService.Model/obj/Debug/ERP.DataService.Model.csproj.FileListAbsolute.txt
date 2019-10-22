@@ -622,3 +622,5 @@ E:\My Project\ProjectGit\ERP-Desktop\Server\ERP.DataService.Model\obj\Debug\ERP.
 E:\My Project\ProjectGit\ERP-Desktop\Server\ERP.DataService.Model\obj\Debug\ERP.DataService.Model.Migrations.changeoffertable.resources
 E:\My Project\ProjectGit\ERP-Desktop\Server\ERP.DataService.Model\obj\Debug\ERP.DataService.Model.Migrations.changedatatype.resources
 E:\My Project\ProjectGit\ERP-Desktop\Server\ERP.DataService.Model\obj\Debug\ERP.DataService.Model.Migrations.addwholesale.resources
+E:\My Project\ProjectGit\ERP-Desktop\Server\ERP.DataService.Model\obj\Debug\ERP.DataService.Model.Migrations.addsettingdate.resources
+E:\My Project\ProjectGit\ERP-Desktop\Server\ERP.DataService.Model\obj\Debug\ERP.DataService.Model.Migrations.addsettingMethod.resources

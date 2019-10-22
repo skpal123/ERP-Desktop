@@ -4,21 +4,22 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using ERPWebApiService.ExrensionMethod;
 
 namespace ERPWebApiService.DataConnection
 {
     public static class DatabaseCommand
     {
-        public static int ExcuteNonQuery(string sql,Dictionary<String,string> paramlist,string commandType)
+        public static int ExcuteNonQuery(string sql,Dictionary<String,object> paramlist,string commandType)
         {
             using (SqlConnection con = new SqlConnection(ConnectionString.getConnectionString()))
             {
                 SqlCommand cmd = new SqlCommand(sql, con);
                 if (paramlist != null)
                 {
-                    foreach (KeyValuePair<string,string> param in paramlist)
+                    foreach (KeyValuePair<string,object> param in paramlist)
                     {
-                        cmd.Parameters.AddWithValue(param.Key,param.Value);
+                        cmd.Parameters.AddWithNullableValue(param.Key,param.Value);
                     }
                 }
                 if (commandType != null)

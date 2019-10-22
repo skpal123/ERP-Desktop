@@ -162,7 +162,7 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id);
                 DatabaseCommand.ExcuteNonQuery("delete from Designation where id=@id", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);
@@ -307,7 +307,7 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id);
                 DatabaseCommand.ExcuteNonQuery("delete from EmployeeGrade where id=@id", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);
@@ -479,7 +479,7 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id);
                 DatabaseCommand.ExcuteNonQuery("delete from EmployeeSubGrade where id=@id", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);
@@ -681,7 +681,7 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id);
                 DatabaseCommand.ExcuteNonQuery("delete from SalaryItem where id=@id", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);
@@ -828,7 +828,7 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id);
                 DatabaseCommand.ExcuteNonQuery("delete from Department where id=@id", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);
@@ -973,7 +973,7 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id);
                 DatabaseCommand.ExcuteNonQuery("delete from Occupation where id=@id", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);
@@ -1118,7 +1118,7 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id);
                 DatabaseCommand.ExcuteNonQuery("delete from EducationLevel where id=@id", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);
@@ -1265,7 +1265,7 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id);
                 DatabaseCommand.ExcuteNonQuery("delete from LeaveType where id=@id", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);

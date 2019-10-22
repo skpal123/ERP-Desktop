@@ -400,7 +400,7 @@ namespace ERPWebApiService.Controllers
             try
             {
                 //var userSession = AuthorizationHelper.GetSession();
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@voucherid", voucherId);
                 DatabaseCommand.ExcuteNonQuery(@"delete from tblvoucher where id=@voucherid
                                                 delete from tblVoucherDetails where voucher_id=@voucherid;
@@ -440,7 +440,7 @@ namespace ERPWebApiService.Controllers
                 };
                 ERPContext.Vouchers.Add(voucher);
                 ERPContext.SaveChanges();
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@voucherid", voucher.Id.ToString());
                 paramlist.Add("@voucherDate", voucher.Voucherdate.ToString());
                 paramlist.Add("@branch_id", null);
@@ -518,7 +518,7 @@ namespace ERPWebApiService.Controllers
                     };
                     ERPContext.Vouchers.AddOrUpdate(voucher);
                     ERPContext.SaveChanges();
-                    Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                    Dictionary<string, object> paramlist = new Dictionary<string, object>();
                     paramlist.Add("@voucherid", voucher.Id.ToString());
                     DatabaseCommand.ExcuteNonQuery("delete from tblVoucherDetails where voucher_id=@voucherid;delete from tblSubledgerTransaction where voucher_id=@voucherid", paramlist, null);
                     var oVoucher = ERPContext.Vouchers.FirstOrDefault(x => x.Id == voucher.Id);
@@ -708,7 +708,7 @@ namespace ERPWebApiService.Controllers
                     };
                     ERPContext.Subledgers.Add(subledger);
                     ERPContext.SaveChanges();
-                    Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                    Dictionary<string, object> paramlist = new Dictionary<string, object>();
                     paramlist.Add("@id", subledgerInfo.AccountId);
                     DatabaseCommand.ExcuteNonQuery("update tblAccount set hasSubledger=1 where id=@id", paramlist, null);
                     subledgerInfo.Id = subledger.Id;

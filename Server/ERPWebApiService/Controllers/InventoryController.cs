@@ -118,7 +118,7 @@ namespace ERPWebApiService.Controllers
             try
             {
                 var Id = (id);
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", Id.ToString());
                 DatabaseCommand.ExcuteNonQuery("delete from tblUnit where id=@id", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);
@@ -223,7 +223,7 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id);
                 DatabaseCommand.ExcuteNonQuery("delete from tblItemLocation where id=@id", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);
@@ -324,7 +324,7 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id);
                 DatabaseCommand.ExcuteNonQuery("delete from tblcategory where id=@id", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);
@@ -430,7 +430,7 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id);
                 DatabaseCommand.ExcuteNonQuery("delete from tblSubCategory where id=@id", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);
@@ -591,7 +591,7 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id);
                 DatabaseCommand.ExcuteNonQuery("delete from tblInventoryItem where id=@id", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);
@@ -744,7 +744,7 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id);
                 DatabaseCommand.ExcuteNonQuery("delete from tblparty where id=@id", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);
@@ -897,7 +897,7 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id);
                 DatabaseCommand.ExcuteNonQuery("delete from tblSupplier where id=@id", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);
@@ -1007,7 +1007,7 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id);
                 DatabaseCommand.ExcuteNonQuery("delete from Manufactures where id=@id", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);
@@ -1226,7 +1226,7 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id);
                 DatabaseCommand.ExcuteNonQuery("delete from tblofferSetup where OfferId=@id", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);
@@ -1384,7 +1384,7 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id);
                 DatabaseCommand.ExcuteNonQuery("delete from tblCustomer where id=@id", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);
@@ -1671,8 +1671,8 @@ namespace ERPWebApiService.Controllers
                         };
                         ERPContext.SupplierTransactions.AddOrUpdate(supplierTransaction);
                         ERPContext.SaveChanges();
-                        Dictionary<string, string> paramlist1 = new Dictionary<string, string>();
-                        paramlist1.Add("@id", supplierTransaction.Id.ToString());
+                        Dictionary<string, object> paramlist1 = new Dictionary<string, object>();
+                        paramlist1.Add("@id", supplierTransaction.Id);
                         DatabaseCommand.ExcuteNonQuery("delete from tblCustomerSupplierTransactionDetail where suppliertransactionId=@id", paramlist1, null);
                         var transactionDetails = new CustomerSupplierTransactionDetail()
                         {
@@ -1707,8 +1707,8 @@ namespace ERPWebApiService.Controllers
                         };
                         ERPContext.PartyTransactions.AddOrUpdate(customerTransaction);
                         ERPContext.SaveChanges();
-                        Dictionary<string, string> paramlist2 = new Dictionary<string, string>();
-                        paramlist2.Add("@id", customerTransaction.Id.ToString());
+                        Dictionary<string, object> paramlist2 = new Dictionary<string, object>();
+                        paramlist2.Add("@id", customerTransaction.Id);
                         DatabaseCommand.ExcuteNonQuery("delete from tblCustomerSupplierTransactionDetail where customertransaction_Id=@id", paramlist2, null);
                         var transactionDetails = new CustomerSupplierTransactionDetail()
                         {
@@ -1840,7 +1840,7 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id);
                 DatabaseCommand.ExcuteNonQuery(@"delete from tblgroupItem where id=@id;
                 delete from tblItemTransaction where group_id=@id", paramlist, null);
@@ -1857,24 +1857,30 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                DataTable dt = new DataTable();
-                dt.Columns.Add("Id", typeof(Guid));
-                dt.Columns.Add("ItemCode", typeof(string));
-                dt.Columns.Add("ItemId", typeof(string));
-                dt.Columns.Add("PurchaseDate", typeof(DateTime));
-                dt.Columns.Add("PreviousAmount", typeof(decimal));
-                dt.Columns.Add("Amount", typeof(decimal));             
-                dt.Columns.Add("Item_Id", typeof(Guid));
                 if (sellPriceInfos.Any())
                 {
-                    foreach (var sellPrice in sellPriceInfos)
+                    Dictionary<string, object> paramlist = new Dictionary<string, object>();
+                    paramlist.Add("@SellingMethod", sellPriceInfos[0].SellingMethod);
+                    DatabaseCommand.ExcuteNonQuery(@"delete from tblsettingSellprice where SellingMethod=@SellingMethod;", paramlist, null);
+                    foreach (var sellprice in sellPriceInfos)
                     {
-                        dt.Rows.Add(Guid.NewGuid().ToString(), sellPrice.ItemCode,sellPrice.ItemId,sellPrice.PurchaseDate,sellPrice.PreviousAmount,sellPrice.Amount,sellPrice.Item_Id);
+                        var settingSellprice = new SettingSellPrice()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Amount = sellprice.Amount,
+                            Item_Id = sellprice.Item_Id,
+                            ItemCode = sellprice.ItemCode,
+                            ItemId = sellprice.ItemId,
+                            PreviousAmount = sellprice.PreviousAmount,
+                            PurchaseDate = sellprice.PurchaseDate,
+                            SettingDate = sellprice.SettingDate,
+                            WholeSaleAmount = sellprice.WholeSaleAmount,
+                            SellingMethod = sellprice.SellingMethod
+                        };
+                        ERPContext.SettingSellPrices.Add(settingSellprice);
                     }
-                }
-                Dictionary<string, object> paramlist = new Dictionary<string, object>();
-                paramlist.Add("@TypeSettingSellPrice", dt);
-                DatabaseCommand.ExcuteObjectNonQuery("proc_SaveSettingSellPriceType", paramlist, "procedure");
+                    ERPContext.SaveChanges();
+                }           
                 return Request.CreateResponse(HttpStatusCode.Created, true);
             }
             catch (Exception ex)
@@ -2195,7 +2201,7 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id);
                 DatabaseCommand.ExcuteNonQuery("delete from tblPartyTransaction where id=@id", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);
@@ -2390,7 +2396,7 @@ namespace ERPWebApiService.Controllers
         {
             try
             {
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id);
                 DatabaseCommand.ExcuteNonQuery("delete from tblSupplierTransaction where id=@id", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);

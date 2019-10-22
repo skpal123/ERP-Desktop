@@ -7,6 +7,8 @@ export class SettingSellprice{
     public ProfitMargin?:number;
     public WholeSaleAmount?:number;
     public Amount?:number;
+    public SettingDate?:Date;
+    public SellingMethod?:number;
     public ItemName?:number;
     public Item_Id?:string;
 }

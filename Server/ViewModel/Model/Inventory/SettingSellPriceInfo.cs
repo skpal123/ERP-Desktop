@@ -15,6 +15,8 @@ namespace ViewModel.Model
         public DateTime? PurchaseDate { set; get; }
         public decimal PreviousAmount { set; get; }
         public decimal WholeSaleAmount { set; get; }
+        public int SellingMethod { set; get; }
+        public DateTime? SettingDate { set; get; }
         public decimal Amount { set; get; }
         public string Item_Id { set; get; }
     }

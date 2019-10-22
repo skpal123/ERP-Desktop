@@ -231,7 +231,7 @@ export class InventoryDefinationServiceService {
     var url=this._defaultRoute.InventoryService+'OfferSetup/'+Id;
     return this._httpClient.delete(url)
   }
-  public GetSettingSellPrice(priceSettingMethod:string){
+  public GetSettingSellPrice(priceSettingMethod:number){
     var url=this._defaultRoute.InventoryService+'settingSellPrice/'+priceSettingMethod;
     return this._httpClient.get<SettingSellprice[]>(url)
   }

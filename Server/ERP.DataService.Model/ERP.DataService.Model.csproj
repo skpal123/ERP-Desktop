@@ -355,6 +355,14 @@
     <Compile Include="Migrations\201910050813300_add wholesale.Designer.cs">
       <DependentUpon>201910050813300_add wholesale.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201910161514173_add settingdate.cs" />
+    <Compile Include="Migrations\201910161514173_add settingdate.Designer.cs">
+      <DependentUpon>201910161514173_add settingdate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910161536178_add settingMethod.cs" />
+    <Compile Include="Migrations\201910161536178_add settingMethod.Designer.cs">
+      <DependentUpon>201910161536178_add settingMethod.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\AccountOpening.cs" />
     <Compile Include="Model\AccountParentChildRelation.cs" />
@@ -636,6 +644,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201910050813300_add wholesale.resx">
       <DependentUpon>201910050813300_add wholesale.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910161514173_add settingdate.resx">
+      <DependentUpon>201910161514173_add settingdate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910161536178_add settingMethod.resx">
+      <DependentUpon>201910161536178_add settingMethod.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -378,7 +378,7 @@ namespace ERPWebApiService.Controllers
             try
             {
                 //var userSession = AuthorizationHelper.GetSession();
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id.ToString());
                 DatabaseCommand.ExcuteNonQuery(@"delete from tblcodeformater where id=@id;", paramlist, null);
                 var codeformater = new CodeFormater()
@@ -497,7 +497,7 @@ namespace ERPWebApiService.Controllers
             try
             {
                 //var userSession = AuthorizationHelper.GetSession();
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@id", id);
                 DatabaseCommand.ExcuteNonQuery(@"delete from tblcodeformater where id=@id;", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);         
@@ -545,7 +545,7 @@ namespace ERPWebApiService.Controllers
             try
             {
                 //var userSession = AuthorizationHelper.GetSession();
-                Dictionary<string, string> paramlist = new Dictionary<string, string>();
+                Dictionary<string, object> paramlist = new Dictionary<string, object>();
                 paramlist.Add("@name", productName);
                 DatabaseCommand.ExcuteNonQuery(@"Update tblcodeformater set LastNumber=LastNumber-1 where Name=@name;", paramlist, null);
                 return Request.CreateResponse(HttpStatusCode.OK, true);

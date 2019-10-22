@@ -16,7 +16,9 @@ import { DatatableTextOutput } from '../../../models/common/datatable-text-click
 })
 export class SettingPriceComponent implements OnInit {
   @ViewChild('sellPriceMethodControl') sellPriceMethodControl:FormControl;
-  sellPriceMethod:string="1"
+  @ViewChild('DateControl') DateControl:FormControl;
+  Date:Date=new Date();
+  sellPriceMethod:number=1
   reload:boolean=false;
   firstTime:boolean=true;
   @BlockUI() blockUI: NgBlockUI;
@@ -38,7 +40,7 @@ export class SettingPriceComponent implements OnInit {
       this.getSettingSellPrice(data)
     })
   }
-  getSettingSellPrice(priceSettingMethod:string){
+  getSettingSellPrice(priceSettingMethod:number){
     this.blockUI.start("Loading,Please wait...")
     this._inventoryDefinationService.GetSettingSellPrice(priceSettingMethod).subscribe(response=>{
       this.settingSellPriceList=response
@@ -93,6 +95,10 @@ export class SettingPriceComponent implements OnInit {
   }
   SaveSettingSellPrice(){
     this.blockUI.start("Loading,Please wait...");
+    this.DataList.forEach(a=>{
+      a.SettingDate=this.Date,
+      a.SellingMethod=this.sellPriceMethod
+    });
     this._inventoryDefinationService.SaveSettingSellPrice(this.DataList).subscribe(response=>{
       this.blockUI.stop();
       let result=response
