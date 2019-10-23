@@ -58,14 +58,20 @@ export class CodeFormaterEntryComponent implements OnInit {
       IsSymbol: [false],
       IsSerial: [true],
       IsTodaysDate: [false],
-      SymbolName: [''],
+      SymbolName: [{ value: "", disabled: true }],
       StartPossition: [0],
       LastNumber: [0],
-      Prefix: [null],
+      Prefix: [{ value: null, disabled: true }],
       StringLength: ['', Validators.required],
       MiddleSymbol: '',
       Preview: ''
     })
+    if(this.codeFormater.Prefix!=''&&this.codeFormater.Prefix!=null){
+      this.codeFormaterForm.controls['Prefix'].enable();
+    }
+    if(this.codeFormater.SymbolName!=''&&this.codeFormater.SymbolName!=null){
+      this.codeFormaterForm.controls['SymbolName'].enable();
+    }
     if (this.codeFormater.Id != null) {
       this.itemNameSelectedItems=[];
       this.itemNameSelectedItems.push({id:this.codeFormater.Name,itemName:this.codeFormater.Name})
@@ -119,9 +125,21 @@ export class CodeFormaterEntryComponent implements OnInit {
       this.codeFormaterForm.controls['IsSerial'].updateValueAndValidity();
     }
   }
+  changeIsDateAndSerial($event){
+    if(this.codeFormaterForm.controls['IsSerial'].value&&this.codeFormaterForm.controls['IsTodaysDate'].value){
+      this.codeFormaterForm.controls['IsSymbol'].setValidators([Validators.requiredTrue]);
+      this.codeFormaterForm.controls['IsSymbol'].updateValueAndValidity();
+    }
+    else{
+      this.codeFormaterForm.controls['IsSymbol'].clearValidators()
+      this.codeFormaterForm.controls['IsSymbol'].updateValueAndValidity();
+    }
+  }
   changeIsSymbol($event) {
     debugger
     if ($event.target.checked) {
+      this.codeFormaterForm.controls['SymbolName'].enable();
+      this.codeFormaterForm.controls['Prefix'].enable()
       this.codeFormaterForm.controls['SymbolName'].setValidators([Validators.required]);
       this.codeFormaterForm.controls['SymbolName'].updateValueAndValidity();
       this.codeFormaterForm.controls['Prefix'].setValidators([Validators.required]);
@@ -132,6 +150,8 @@ export class CodeFormaterEntryComponent implements OnInit {
       this.codeFormaterForm.controls['SymbolName'].updateValueAndValidity();
       this.codeFormaterForm.controls['Prefix'].clearValidators();
       this.codeFormaterForm.controls['Prefix'].updateValueAndValidity();
+      this.codeFormaterForm.controls['SymbolName'].disable();
+      this.codeFormaterForm.controls['Prefix'].disable()
     }
   }
   prefixChange($event) {
@@ -200,6 +220,7 @@ export class CodeFormaterEntryComponent implements OnInit {
   }
   seePreview() {
     debugger
+    this.codeFormaterForm.controls['Preview'].setValue(0)
     this.codeFormater = this.codeFormaterForm.value;
     if (this.codeFormater.IsTodaysDate && this.codeFormater.IsSerial) {
       var firstPart = new Date().getFullYear().toString();
@@ -207,7 +228,9 @@ export class CodeFormaterEntryComponent implements OnInit {
       var day = this.appendSting(new Date().getDate());
       firstPart = firstPart + month + day;
       if (this.codeFormater.IsSymbol) {
-        firstPart = this.codeFormater.SymbolName == "hifen" ?  this.codeFormater.Prefix+'-'+firstPart : this.codeFormater.SymbolName == "underscore" ? this.codeFormater.Prefix+'_'+firstPart : "" + this.codeFormater.Prefix+firstPart;
+        firstPart = this.codeFormater.SymbolName == "hifen" ?  this.codeFormater.Prefix.toUpperCase()+'-'+firstPart : 
+        this.codeFormater.SymbolName == "underscore" ? this.codeFormater.Prefix.toUpperCase()+'_'+
+        firstPart : "" + this.codeFormater.Prefix.toUpperCase()+firstPart;
         if (this.codeFormater.MiddleSymbol != null) {
           firstPart += this.codeFormater.MiddleSymbol;
         }
@@ -225,7 +248,7 @@ export class CodeFormaterEntryComponent implements OnInit {
     }
     else if (this.codeFormater.IsSerial) {
       if(this.codeFormater.IsSymbol){
-        var firstPart=this.codeFormater.SymbolName == "hifen" ?  this.codeFormater.Prefix+'-' : this.codeFormater.SymbolName == "underscore" ? '_' : "" + this.codeFormater.Prefix+firstPart;
+        var firstPart=this.codeFormater.SymbolName == "hifen" ?  this.codeFormater.Prefix.toUpperCase()+'-' : this.codeFormater.SymbolName == "underscore" ? '_' : "" + this.codeFormater.Prefix.toUpperCase()+firstPart;
         let length = firstPart.length;
         let digitCount = this.codeFormater.StartPossition.toString().length;
         let dif = this.codeFormater.StringLength - (length + digitCount);

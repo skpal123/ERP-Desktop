@@ -7,18 +7,13 @@ import { ValidationService } from '../../../services/common/validation.service';
 import { GroupItem } from '../../../models/regular-operation/inventory/group-item.model';
 import { AlertBoxService } from '../../../shared/alert-box.service';
 import { DialogData } from '../../../models/common/dialog-data.model';
-import { AddCategoryComponent } from '../../../master-settings/inventory-defination-module/add-category/add-category.component';
-import { AddSubcategoryComponent } from '../../../master-settings/inventory-defination-module/add-subcategory/add-subcategory.component';
 import { FormBuilder, FormGroup, FormArray, Validators, AbstractControl } from '@angular/forms';
 import { DropdownService } from '../../../services/common/dropdown.service';
 import { SelectDropdown } from '../../../models/common/select.dropdown.model';
 import { ItemPurchaseValidation } from '../../../models/validation/item-purchase.validation.model';
 import { InventoryService } from '../../../services/regular-operation/inventory.service';
-import { SupplierDropdownComponent } from '../../../common-module/supplier-dropdown/supplier-dropdown.component';
 import { SupplierEntryComponent } from '../../../master-settings/inventory-defination-module/supplier-entry/supplier-entry.component';
 import { ItemTransaction } from '../../../models/regular-operation/inventory/item-transaction.model';
-import { PartyEntryComponent } from '../../../master-settings/inventory-defination-module/party-entry/party-entry.component';
-import { CustomerEntryComponent } from '../../../master-settings/inventory-defination-module/customer-entry/customer-entry.component';
 import { FormDetailsControlComponent } from '../../../common-module/form-details-control/form-details-control.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Supplier } from '../../../models/master-settings/inventory-defination/supplier.model';
@@ -37,6 +32,12 @@ export class ItemPurchaseComponent implements OnInit {
   supplierNew:boolean=false;
   partyNew:boolean=false;
   customerNew:boolean=false;
+  IsAutoCode:boolean=false;
+  IsAutoCodeChalan:boolean=false;
+  IsAutoCodeLotno:boolean=false;
+  itemName:string="transactionId";
+  itemNameChalan:string="chalanNo";
+  itemNameLotno:string="lotno";
   grandTotal:number=0;
   grandQuantity:number=0;
   startDate:Date=new Date();
@@ -90,6 +91,15 @@ export class ItemPurchaseComponent implements OnInit {
   ngOnInit() {
     debugger
     this.purchaseValidation=this.groupItem.data;
+    if(this.purchaseValidation[2].TransactionId&&this.groupItem.TransactionId==null){
+      this.IsAutoCode=true
+    }
+    if(this.purchaseValidation[2].ChalanNo&&this.groupItem.ChalanNo==null){
+      this.IsAutoCodeChalan=true
+    }
+    if(this.purchaseValidation[2].LotNo&&this.groupItem.LotNo==null){
+      this.IsAutoCodeLotno=true
+    }
     this.getItemList("null");
     this.getLocationList();
     this.itemPurchaseForm = this.fb.group({
@@ -473,9 +483,8 @@ savePurchaseItem(){
         this._alertBox.openDialog(dialogData);
       }
     },error=>{
-      let message=error.json();
       let dialogData=new DialogData();
-      dialogData.message=message.Message;
+      dialogData.message=error
       this._alertBox.openDialog(dialogData);
     })
   }
@@ -489,9 +498,8 @@ savePurchaseItem(){
         this._alertBox.openDialog(dialogData);
       }
     },error=>{
-      let message=error.json();
       let dialogData=new DialogData();
-      dialogData.message=message.Message;
+      dialogData.message=error
       this._alertBox.openDialog(dialogData);
     })
   }
@@ -505,5 +513,17 @@ getItemStockByLocationAndItemId(itemId:string,locationId:string,control:Abstract
     dialogData.message=error
     this._alertBox.openDialog(dialogData);
   })
+}
+GeneratedAutoCodeForTransactionId($event){
+  this.groupItem.TransactionId=$event;
+  this.itemPurchaseForm.get('TransactionId').setValue($event);
+}
+GeneratedAutoCodeForChalanNo($event){
+  this.groupItem.ChalanNo=$event;
+  this.itemPurchaseForm.get('ChalanNo').setValue($event);
+}
+GeneratedAutoCodeForLotNo($event){
+  this.groupItem.LotNo=$event;
+  this.itemPurchaseForm.get('LotNo').setValue($event);
 }
 }

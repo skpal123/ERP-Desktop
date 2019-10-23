@@ -35,13 +35,13 @@
                 <div class="form-group row" [class.has-success]="codeFormaterForm.get('IsSerial').valid&&codeFormaterForm.get('IsSerial').touched" [ngClass]="{'has-error':codeFormaterForm.get('IsSerial').invalid&&codeFormaterForm.get('IsSerial').touched}">
                   <label for="IsSerial" class="col-sm-3 col-form-label control-label" [class.required]="codeFormaterForm.get('IsSerial').invalid">Is Serial</label>
                   <div class="col-sm-9" >
-                      <input id="IsSerial" type="checkbox"  formControlName="IsSerial">
+                      <input id="IsSerial" (change)="changeIsDateAndSerial($event)" type="checkbox"  formControlName="IsSerial">
                   </div>
                 </div>
                 <div class="form-group row" [class.has-success]="codeFormaterForm.get('IsTodaysDate').valid&&codeFormaterForm.get('IsTodaysDate').touched" [ngClass]="{'has-error':codeFormaterForm.get('IsTodaysDate').invalid&&codeFormaterForm.get('IsTodaysDate').touched}">
-                  <label for="IsTodaysDate" class="col-sm-3 col-form-label control-label" [class.required]="codeFormaterForm.get('IsTodaysDate').invalid">IsTodaysDate</label>
+                  <label for="IsTodaysDate"  class="col-sm-3 col-form-label control-label" [class.required]="codeFormaterForm.get('IsTodaysDate').invalid">IsTodaysDate</label>
                   <div class="col-sm-9" >
-                      <input id="IsTodaysDate" type="checkbox" formControlName="IsTodaysDate">  
+                      <input id="IsTodaysDate" (change)="changeIsDateAndSerial($event)" type="checkbox" formControlName="IsTodaysDate">  
                   </div>
                 </div>
                 <div class="form-group row "[class.has-success]="codeFormaterForm.get('IsSymbol').valid&&codeFormaterForm.get('IsSymbol').touched" [ngClass]="{'has-error':codeFormaterForm.get('IsSymbol').invalid&&codeFormaterForm.get('IsSymbol').touched}">

@@ -1657,7 +1657,7 @@ namespace ERPWebApiService.Controllers
                             ERPContext.SupplierTransactions.FirstOrDefault(x => x.IsFirstTransaction == true&&x.Group_Id==oGroupItem.Id);
                         var supplierTransaction = new SupplierTransaction()
                         {
-                            Id = oSupplierTransaction!=null?oSupplierTransaction.Id:Guid.NewGuid().ToString().ToString(),
+                            Id = oSupplierTransaction!=null?oSupplierTransaction.Id:Guid.NewGuid().ToString(),
                             ChalanNo = groupItemInfo.ChalanNo,
                             InvoiceNo = groupItemInfo.InvoiceNo,
                             Supplier_Id = groupItemInfo.Supplier_Id,
@@ -1673,7 +1673,7 @@ namespace ERPWebApiService.Controllers
                         ERPContext.SaveChanges();
                         Dictionary<string, object> paramlist1 = new Dictionary<string, object>();
                         paramlist1.Add("@id", supplierTransaction.Id);
-                        DatabaseCommand.ExcuteNonQuery("delete from tblCustomerSupplierTransactionDetail where suppliertransactionId=@id", paramlist1, null);
+                        DatabaseCommand.ExcuteNonQuery("delete from tblCustomerSupplierTransactionDetail where SupplierTransaction_Id=@id", paramlist1, null);
                         var transactionDetails = new CustomerSupplierTransactionDetail()
                         {
                             Id = Guid.NewGuid().ToString(),

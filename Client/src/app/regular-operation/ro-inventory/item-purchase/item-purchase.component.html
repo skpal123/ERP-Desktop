@@ -19,10 +19,18 @@
                       [ngClass]="{'has-error':itemPurchaseForm.get('TransactionId').invalid&&itemPurchaseForm.get('TransactionId').touched}">
                       <label class="col-sm-4 control-label" for="TransactionId">Transaction Id <span
                           style="color: red;margin-left: 10px; size: 15px">*</span></label>
-                      <div class="col-sm-7">
-                        <input id="TransactionId" formControlName="TransactionId" type="text" class="form-control">
+                      <div class="col-sm-6">
+                        <input id="TransactionId" [readonly]="purchaseValidation[3]?.TransactionId" formControlName="TransactionId" type="text" class="form-control">
                         <span class="help-block"
                           *ngIf="itemPurchaseForm.get('TransactionId').invalid&&itemPurchaseForm.get('TransactionId').touched">Required</span>
+                      </div>
+                      <div class="col-md-2"> 
+                        <app-autocode-generate
+                        [itemName]="itemName"
+                        [IsAutoCode]="IsAutoCode"
+                        (getGenerateAutoCode)="GeneratedAutoCodeForTransactionId($event)"
+                        >
+                        </app-autocode-generate>
                       </div>
                     </div>
                   </div>
@@ -31,10 +39,18 @@
                       [ngClass]="{'has-error':itemPurchaseForm.get('ChalanNo').invalid&&itemPurchaseForm.get('ChalanNo').touched}">
                       <label class="col-sm-4 control-label" for="ChalanNo">Chalan No<span
                           style="color: red;margin-left: 10px; size: 30px">*</span></label>
-                      <div class="col-sm-7">
-                        <input id="ChalanNo" formControlName="ChalanNo" type="text" class="form-control">
+                      <div class="col-sm-6">
+                        <input id="ChalanNo" [readonly]="purchaseValidation[3]?.ChalanNo" formControlName="ChalanNo" type="text" class="form-control">
                         <span class="help-block"
                           *ngIf="itemPurchaseForm.get('ChalanNo').invalid&&itemPurchaseForm.get('ChalanNo').touched">Required</span>
+                      </div>
+                      <div class="col-md-2"> 
+                        <app-autocode-generate
+                        [itemName]="itemNameChalan"
+                        [IsAutoCode]="IsAutoCodeChalan"
+                        (getGenerateAutoCode)="GeneratedAutoCodeForChalanNo($event)"
+                        >
+                        </app-autocode-generate>
                       </div>
                     </div>
                   </div>
@@ -62,7 +78,9 @@
                         <span class="help-block" *ngIf="itemPurchaseForm.get('Supplier_Id').invalid">Required</span>
                       </div>
                       <div class="col-md-1">
-                        <span id="pointer" (click)="createNewSupplier()" class="glyphicon glyphicon-plus"></span>
+                        <span id="pointer" (click)="createNewSupplier()">
+                          <img height="30px" width="30px" src="./assets/Img/addicon.png">
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -155,10 +173,18 @@
                     <div class="form-group row" [class.has-suucess]="itemPurchaseForm.get('LotNo').valid"
                       [ngClass]="{'has-error':itemPurchaseForm.get('LotNo').invalid&&itemPurchaseForm.get('LotNo').touched}">
                       <label class="col-sm-4 control-label" for="LotNo">Lot No</label>
-                      <div class="col-sm-7">
+                      <div class="col-sm-6">
                         <input id="LotNo" formControlName="LotNo" type="text" class="form-control">
                         <span class="help-block"
                           *ngIf="itemPurchaseForm.get('LotNo').invalid&&itemPurchaseForm.get('LotNo').touched">Required</span>
+                      </div>
+                      <div class="col-md-2"> 
+                        <app-autocode-generate
+                        [itemName]="itemNameLotno"
+                        [IsAutoCode]="IsAutoCodeLotno"
+                        (getGenerateAutoCode)="GeneratedAutoCodeForLotNo($event)"
+                        >
+                        </app-autocode-generate>
                       </div>
                     </div>
                   </div>
